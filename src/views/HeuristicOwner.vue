@@ -44,9 +44,9 @@
               <td>{{ owner.url }}</td>
               <td>{{ owner.description }}</td>
               <td>
-                <!-- <Routerlink to="/" class="btn btn-success">
-            Edit
-          </Routerlink> -->
+                <button @click="copylink(owner)" class="btn btn-primary">Ir a Encuesta</button>
+                <button @click="goToEvaluate(owner.id)" class="btn btn-success">Evaluar</button>
+                <button @click="goToEvaluationResults(owner.id)" class="btn btn-warning">Resultados</button>
                 <button @click="handleDeleteHTest(owner.id)" class="btn btn-danger">
                   Eliminar
                 </button>
@@ -61,7 +61,9 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router'
 
+const router = useRouter();
 const form = ref({
   name: '',
   url: '',
@@ -119,7 +121,16 @@ const handleDeleteHTest = async (id) => {
   }
 };
 
+const copylink = (owner) => {
+  console.log("presionadocopybutton", owner.id)
+  var url = "/o/" + owner.id + "/checklist"
+  router.push(url);
+}
 
+const goToEvaluate = (ownerId) => {
+  console.warn(ownerId);
+  router.push('/o/' + ownerId + '/evaluacion');
+}
 const refreshOwnersList = async () => {
   const rgetallproducts = await axios.get('http://127.0.0.1:5000/owners');
   owners.value = rgetallproducts.data.owners; // Asigna los datos correctamente
@@ -127,6 +138,10 @@ const refreshOwnersList = async () => {
   console.log(owners.value);
 };
 
+const goToEvaluationResults = (ownerId) => {
+  console.warn(ownerId);
+  router.push('/o/' + ownerId + '/resultadoevaluacion');
+}
 onMounted(async () => {
   // Cuando el componente se monta, obtén la lista de propietarios
   await refreshOwnersList();

@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <nav class="navbar navbar-expand-sm bg-body-tertiary">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Navbar</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -8,17 +8,22 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
+                    <!-- <li class="nav-item">
+                        <RouterLink to="checklist"><a class="nav-link active" aria-current="page">Checklist</a></RouterLink>
+                        
+                    </li> -->
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+
+                        <RouterLink to="/pruebasheuristicas"><a class="nav-link">PropietariosPruebas</a></RouterLink>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Features</a>
+
+                        <RouterLink to="/heuristicproblems"><a class="nav-link">Evaluacion</a></RouterLink>
+
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Pricing</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+                        <RouterLink to="/heuristicevaluation"><a class="nav-link">Evaluacion2</a></RouterLink>
+
                     </li>
                 </ul>
             </div>
