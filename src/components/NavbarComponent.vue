@@ -1,7 +1,7 @@
 <template>
     <nav class="navbar navbar-expand-sm bg-body-tertiary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Navbar</a>
+            <a class="navbar-brand" href="#">Heuristicas App</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -13,17 +13,11 @@
                         
                     </li> -->
                     <li class="nav-item">
-
-                        <RouterLink to="/pruebasheuristicas"><a class="nav-link">PropietariosPruebas</a></RouterLink>
+                        <RouterLink class="nav-link" to="/pruebasheuristicas">Pruebas Heuristicas
+                        </RouterLink>
                     </li>
                     <li class="nav-item">
-
-                        <RouterLink to="/heuristicproblems"><a class="nav-link">Evaluacion</a></RouterLink>
-
-                    </li>
-                    <li class="nav-item">
-                        <RouterLink to="/heuristicevaluation"><a class="nav-link">Evaluacion2</a></RouterLink>
-
+                        <RouterLink class="nav-link" to="/pruebadiseno">Pruebas Diseño</RouterLink>
                     </li>
                 </ul>
             </div>

@@ -1,6 +1,6 @@
 <script setup>
 //import html2pdf from "html2pdf.js"
-import pdfMake, { values } from "pdfmake/build/pdfmake";
+import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import { ref, onMounted, toRaw } from 'vue';
@@ -11,7 +11,7 @@ const route = useRoute();
 const evaluationResults = ref([]);
 const ownerId = ref();
 const EvaluationDescprition = ref("A continuación se presentan los resultados de la evaluación de usabilidad, utilizando el método de prueba denominado analisis heuristico. Se muestra la tabla de resultados con sus respectivos niveles de criterios de usabilidad");
-const exportValues = ref();
+//const exportValues = ref();
 onMounted(() => {
     ownerId.value = route.params.ownerId
     getEvaluationResults();
@@ -32,10 +32,10 @@ const getEvaluationResults = async () => {
 const infode = () => {
 
     const valuesArray = toRaw(evaluationResults.value).map(obj => Object.values(obj));
-    let arreglofinal = [['Severidad', 'Descripción', 'Heuristica Incumplida', 'Criticismo', 'Frecuencia', "Código", 'Incidentes']];
+    let arreglofinal = [['Código', 'Descripción', 'Heuristica Incumplida', 'Criticismo', 'Frecuencia', "Severidad", 'Incidentes']];
     valuesArray.forEach(value => {
-        console.log(value);
-        arreglofinal.push(value);
+
+        arreglofinal.push([value[5], value[1], value[3], value[0], value[2], value[6], value[4]]);
     }
     )
     console.log(arreglofinal);
@@ -117,8 +117,8 @@ const exportPDF = () => {
                                     <th>Heuristica Incumplida</th>
                                     <th>Criticismo</th>
                                     <th>Frecuencia</th>
-                                    <th>Incidentes</th>
                                     <th>Severidad</th>
+                                    <th>Incidentes</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -128,8 +128,9 @@ const exportPDF = () => {
                                     <td>{{ evaluation.hi }}</td>
                                     <td>{{ evaluation.criticism }}</td>
                                     <td>{{ evaluation.frequency }}</td>
-                                    <td>{{ evaluation.incidents }}</td>
                                     <td>{{ evaluation.severity }}</td>
+                                    <td>{{ evaluation.incidents }}</td>
+
                                 </tr>
                             </tbody>
                         </table>

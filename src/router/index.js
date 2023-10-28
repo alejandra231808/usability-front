@@ -5,6 +5,8 @@ import HeuristicCheck from '../views/HeuristicCheck.vue'
 import HeuristicProblems from '../views/heuristicproblems.vue'
 import HeuristicEvaluation from '../views/heuristicevaluation.vue'
 import HeuristicEvaluationResult from '../views/HeuristicEvaluationResult.vue'
+import DesingTest from '../views/DesingTests.vue'
+import DesingTestQuestionary from '../views/DesingTestQuestionary.vue'
 import ChecklistDone from '../views/ChecklistDone.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -47,16 +49,17 @@ const router = createRouter({
       component: HeuristicEvaluation
     },
     {
-      path:'/o/:idowner/checklist',
-      component:HeuristicCheck
+      path: '/o/:idowner/checklist',
+      component: HeuristicCheck
     },
     {
-      path:'/encuestaterminada',
-      component:ChecklistDone
+      path: '/encuestaterminada',
+      component: ChecklistDone
     },
-    {path:'/o/:ownerId/resultadoevaluacion',
-      component:HeuristicEvaluationResult}
-
+    { path: '/o/:ownerId/resultadoevaluacion', component: HeuristicEvaluationResult },
+    //rutas desing 
+    { path: '/pruebadiseno', component: DesingTest },
+    { path: '/o/:ownerId/cuestionario', component: DesingTestQuestionary }
   ]
 })
 
