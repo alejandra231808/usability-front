@@ -8,6 +8,8 @@ import HeuristicEvaluationResult from '../views/HeuristicEvaluationResult.vue'
 import DesingTest from '../views/DesingTests.vue'
 import DesingTestQuestionary from '../views/DesingTestQuestionary.vue'
 import ChecklistDone from '../views/ChecklistDone.vue'
+import Register from '../views/Register_2.vue'
+import Login from '../views/Loguin_2.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -59,7 +61,12 @@ const router = createRouter({
     { path: '/o/:ownerId/resultadoevaluacion', component: HeuristicEvaluationResult },
     //rutas desing 
     { path: '/pruebadiseno', component: DesingTest },
-    { path: '/o/:ownerId/cuestionario', component: DesingTestQuestionary }
+    { path: '/o/:ownerId/cuestionario', component: DesingTestQuestionary },
+    //register
+    { path: '/register', component: Register },
+    //loguin
+    { path: '/login', component: Login}
+
   ]
 })
 
