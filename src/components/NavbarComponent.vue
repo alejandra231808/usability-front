@@ -19,6 +19,9 @@
                     <li class="nav-item">
                         <RouterLink class="nav-link" to="/pruebadiseno">Pruebas Diseño</RouterLink>
                     </li>
+                    <li class="nav-item">
+                        <RouterLink class="nav-link" to="/register">Registrarse</RouterLink>
+                    </li>
                     <li class="nav-item mx-auto" v-if="condition">
                         <a class="nav-link" v-on:click="handleLogout">Cerrar Sesion </a>
                     </li>
