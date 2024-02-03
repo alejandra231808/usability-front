@@ -4,7 +4,7 @@
 
 <template>
   <main>
-    
-    <h1>this is home page</h1>
+
+    <h1>Usability App Welcome</h1>
   </main>
 </template>
