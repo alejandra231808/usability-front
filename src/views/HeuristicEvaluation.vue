@@ -292,13 +292,13 @@ const getRecommendation = () => {
       </div>
     </div>
   
-    <!-- Pie Chart
-    <div class="container">
+    <!-- Pie Chart -->
+    <!-- <div class="container">
       <div class="row">
         <div class="col-sm-12">
           <h1>gráfica porcentajes</h1>
           <canvas id="pieChart" width="800" height="800"></canvas>
         </div>
       </div>
-    </div>  -->
+    </div>    -->
   </template>
