@@ -19,15 +19,17 @@ onMounted(() => {
 })
 
 const getEvaluationResults = async () => {
-    console.log("asdassad")
-    await axios.get('http://127.0.0.1:5000/evaluations/' + ownerId.value).then(
-        response => {
-            evaluationResults.value = response.data;
-            console.log("Informacion del get", evaluationResults.value)
-        }
-    ).catch()
-
-}
+    try {
+        const response = await axios.get(`http://127.0.0.1:5000/evaluations/${ownerId.value}`);
+        evaluationResults.value = response.data;
+        console.log("Informacion del get", evaluationResults.value);
+        
+        // Llama a la función para generar el PDF con los resultados y la gráfica
+        infode();
+    } catch (error) {
+        console.error("Error al obtener los resultados de la evaluación:", error);
+    }
+};
 
 const infode = () => {
 
@@ -37,7 +39,8 @@ const infode = () => {
 
         arreglofinal.push([value[5], value[1], value[3], value[0], value[2], value[6], value[4]]);
     }
-    )
+    );
+    
     console.log(arreglofinal);
     var dd = {
         content: [
@@ -79,16 +82,18 @@ const infode = () => {
 
     }
 
+    
+
     pdfMake.createPdf(dd).open();
 
 };
-// playground requires you to assign document definition to a variable called dd
 
 
 
 const exportPDF = () => {
     infode();
 }
+
 </script>
 
 <template>

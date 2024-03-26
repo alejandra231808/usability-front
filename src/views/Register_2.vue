@@ -6,12 +6,14 @@
   const form = ref({
     username: '',
     email: '',
-    password: ''
+    password: '',
+   role: '' 
   });
   const errors = ref({
     username: '',
     email: '',
-    password: ''
+    password: '',
+    role: '' 
   });
   
   const router = useRouter();
@@ -30,6 +32,11 @@
     if (!form.value.password) {
       errors.value.password = 'La contraseña es obligatoria.';
     }
+
+    if (!form.value.role) {
+      errors.value.role = 'Selecciona un rol.'; 
+    }
+  
   
     if (Object.values(errors.value).some(error => error !== '')) {
       return;
@@ -38,7 +45,8 @@
     const response = await axios.post('http://127.0.0.1:5000/register', {
       username: form.value.username,
       email: form.value.email,
-      password: form.value.password
+      password: form.value.password,
+      rol:form.value.role
     });
   
     console.log(response);
@@ -68,6 +76,17 @@
             <input type="password" class="form-control" v-model="form.password" id="password">
             <div class="text-danger">{{ errors.password }}</div>
           </div>
+           <div class="mb-3">
+            <label for="role" class="form-label">Rol</label>
+            <select v-model="form.role" class="form-select" id="rol">
+              <option value="" disabled>Selecciona un rol</option>
+              <option value="administrator">Administrador</option>
+              <option value="owner">Propietario</option>
+              <option value="evaluator">Evaluador</option>
+            </select>
+            <div class="text-danger">{{ errors.rol }}</div>
+          </div> 
+
           <button type="submit" class="btn btn-primary">Registrar Usuario</button>
         </form>
       </div>

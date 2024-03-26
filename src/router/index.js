@@ -3,7 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import HeuristicTest from '../views/HeuristicOwner.vue'
 import HeuristicCheck from '../views/HeuristicCheck.vue'
 import HeuristicProblems from '../views/heuristicproblems.vue'
-import HeuristicEvaluation from '../views/heuristicevaluation.vue'
+import HeuristicEvaluation from '../views/HeuristicEvaluation.vue'
 import HeuristicEvaluationResult from '../views/HeuristicEvaluationResult.vue'
 import DesingTest from '../views/DesingTests.vue'
 import DesingTestQuestionary from '../views/DesingTestQuestionary.vue'
@@ -93,7 +93,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   const useAuth = useAuthStore()
-  //
+
   if (requiresAuth && !useAuth.isLoggedIn) {
     next('/login');
   } else {

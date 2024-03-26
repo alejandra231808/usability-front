@@ -3,37 +3,27 @@ import { defineStore } from 'pinia';
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         isLoggedIn: localStorage.getItem('isLoggedIn') === 'true',
+        role: localStorage.getItem('role') ||'role', 
+        
     }),
 
     actions: {
-        login() {
-            // Lógica de inicio de sesión (puedes ajustar según tus necesidades)
+        login(role) {
+           
+            //  de inicio de sesión 
             this.isLoggedIn = true;
+            this.role = role;
             localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('role', role);
         },
 
         logout() {
-            // Lógica de cierre de sesión (puedes ajustar según tus necesidades)
+            // Lógica de cierre de sesión 
             this.isLoggedIn = false;
+            this.role = 'user';
             localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('role');
         },
     },
 
-
-
-    // state: () => ({
-    //     isLoggedIn: false,
-    // }),
-
-    // actions: {
-    //     login() {
-    //         // Lógica de inicio de sesión (puedes ajustar según tus necesidades)
-    //         this.isLoggedIn = true;
-    //     },
-
-    //     logout() {
-    //         // Lógica de cierre de sesión (puedes ajustar según tus necesidades)
-    //         this.isLoggedIn = false;
-    //     },
-    // },
 });

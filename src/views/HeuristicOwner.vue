@@ -47,9 +47,7 @@
                 <button @click="copylink(owner)" class="btn btn-primary">Ir a Encuesta</button>
                 <button @click="goToEvaluate(owner.id)" class="btn btn-success">Evaluar</button>
                 <button @click="goToEvaluationResults(owner.id)" class="btn btn-warning">Resultados</button>
-                <button @click="handleDeleteHTest(owner.id)" class="btn btn-danger">
-                  Eliminar
-                </button>
+                <button @click="handleDeleteHTest(owner.id)" class="btn btn-danger"> Eliminar</button>
               </td>
             </tr>
           </tbody>
@@ -103,7 +101,10 @@ const handleSaveHTest = async () => {
     description: form.value.description
   });
 
+  const responseuser = await axios.get('http://127.0.0.1:5000/user' );
+
   console.log(response);
+  console.log(responseuser);
 
   // Después de guardar, obtén nuevamente la lista de propietarios
   await refreshOwnersList();

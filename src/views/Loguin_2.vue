@@ -6,13 +6,16 @@ import { useAuthStore } from '../stores/useAuthStore';
 
 const form = ref({
   username: '',
-  password: ''
+  password: '',
+  role: '' 
 });
+
 const errors = ref({
   username: '',
   password: ''
 });
-const useAuth = useAuthStore()
+
+const useAuth = useAuthStore();
 const router = useRouter();
 
 const handleLogin = async () => {
@@ -30,22 +33,24 @@ const handleLogin = async () => {
     return;
   }
 
-  await axios.post('http://127.0.0.1:5000/login', {
-    username: form.value.username,
-    password: form.value.password
-  }).then(response => {
-    console.log(response);
+  try {
+   await axios.post('http://127.0.0.1:5000/login', {
+      username: form.value.username,
+      password: form.value.password,
+ 
+    }).then(response=> {
+      console.log(response.data.user.rol)
+      useAuth.login(response.data.user.rol)
+    });
+
+    router.push('/pruebasheuristicas'); 
+  } catch (error) {
+    console.error(error);
+   
   }
-
-  ).catch();
-
-
-  // Lógica adicional después de iniciar sesión, como redirección a otra página
-  // ...
-  useAuth.login();
-  router.push('/pruebasheuristicas'); // Ejemplo: Redirige al usuario a la página de dashboard después de iniciar sesión
 };
 </script>
+
 
 <template>
   <div>
