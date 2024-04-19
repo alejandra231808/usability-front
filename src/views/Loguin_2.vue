@@ -34,44 +34,56 @@ const handleLogin = async () => {
   }
 
   try {
-   await axios.post('http://127.0.0.1:5000/login', {
+    const response = await axios.post('http://127.0.0.1:5000/login', {
       username: form.value.username,
-      password: form.value.password,
- 
-    }).then(response=> {
-      console.log(response.data.user.rol)
-      useAuth.login(response.data.user.rol)
+      password: form.value.password
     });
 
+    console.log(response.data.user.rol);
+
+    const rol = response.data.user.rol;
+    let experience = '';
+
+    // Verificar si el rol es 'evaluador' y obtener la experiencia
+    if (rol === 'evaluador') {
+      experience = response.data.user.experience;
+    }
+
+    // Iniciar sesión con el rol y la experiencia correspondientes
+    useAuth.login(rol, experience);
+
     router.push('/pruebasheuristicas'); 
+    
   } catch (error) {
     console.error(error);
-   
   }
 };
+
+
 </script>
 
 
 <template>
-  <div>
-    <h1 class="text-center">Iniciar Sesión</h1>
-    <div class="card">
-      <div class="card-body">
-        <form @submit.prevent="handleLogin">
-          <div class="mb-3">
-            <label for="username" class="form-label">Nombre de usuario</label>
-            <input type="text" class="form-control" v-model="form.username" id="username">
-            <div class="text-danger">{{ errors.username }}</div>
-          </div>
-          <div class="mb-3">
-            <label for="password" class="form-label">Contraseña</label>
-            <input type="password" class="form-control" v-model="form.password" id="password">
-            <div class="text-danger">{{ errors.password }}</div>
-          </div>
-          <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
-        </form>
-      </div>
-    </div>
-  </div>
+  <!-- <div class="login-container">
+    <div class="login-form">
+      <div class="logo-container">
+        <img src="../assets/lading/imagen2.png" alt="Logo de la empresa" class="logo">
+      </div> -->
+      <h1 class="text-center">Iniciar Sesión</h1>
+      <form @submit.prevent="handleLogin" class="form">
+        <div class="form-group">
+          <label for="username" class="form-label">Nombre de usuario</label>
+          <input type="text" class="form-control" v-model="form.username" id="username">
+          <div class="text-danger">{{ errors.username }}</div>
+        </div>
+        <div class="form-group">
+          <label for="password" class="form-label">Contraseña</label>
+          <input type="password" class="form-control" v-model="form.password" id="password">
+          <div class="text-danger">{{ errors.password }}</div>
+        </div>
+        <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+      </form>
+   
 </template>
-  
+
+

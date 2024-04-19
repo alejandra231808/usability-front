@@ -8,13 +8,8 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                    <!-- <li class="nav-item">
-                        <RouterLink to="checklist"><a class="nav-link active" aria-current="page">Checklist</a></RouterLink>
-                        
-                    </li> -->
                     <li class="nav-item">
-                        <RouterLink class="nav-link" to="/pruebasheuristicas">Pruebas Heuristicas
-                        </RouterLink>
+                        <RouterLink class="nav-link" to="/pruebasheuristicas">Inicie Sesion</RouterLink>
                     </li>
                     <li class="nav-item">
                         <RouterLink class="nav-link" to="/pruebadiseno">Pruebas Diseño</RouterLink>
@@ -23,7 +18,7 @@
                         <RouterLink class="nav-link" to="/register">Registrarse</RouterLink>
                     </li>
                     <li class="nav-item mx-auto" v-if="condition">
-                        <a class="nav-link" v-on:click="handleLogout">Cerrar Sesion </a>
+                        <a class="nav-link" v-on:click="handleLogout">Cerrar Sesion</a>
                     </li>
                 </ul>
             </div>
@@ -34,17 +29,30 @@
 <script setup>
 import { useAuthStore } from '../stores/useAuthStore';
 import { useRouter } from 'vue-router';
+
 const condition = true;
 const router = useRouter();
 const useAuth = useAuthStore();
-
 
 const handleLogout = () => {
     console.log("cerrando sesion")
     useAuth.logout();
     router.push("/");
+}
+</script>
 
+<style scoped>
+
+.navbar {
+    background-color: #e0d8e9; /* Color de fondo */
+    border-bottom: 1px solid #207260; /* Borde inferior */
 }
 
+.nav-link {
+    color: #111111; /* Color del texto */
+}
 
-</script>
+.nav-link:hover {
+    color: #277959; /* Color del texto al pasar el mouse */
+}
+</style>

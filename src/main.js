@@ -12,9 +12,12 @@ import Chart from 'chart.js/auto';
 
 
 
+
 //import './axios'
 const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
 app.mount('#app')
+
+

@@ -1,63 +1,57 @@
 <script setup>
   import { ref } from 'vue';
-  import axios from 'axios';
-  import { useRouter } from 'vue-router';
-  
-  const form = ref({
-    username: '',
-    email: '',
-    password: '',
-   role: '' 
-  });
-  const errors = ref({
-    username: '',
-    email: '',
-    password: '',
-    role: '' 
-  });
-  
-  const router = useRouter();
-  
-  const handleRegister = async () => {
-    errors.value = {};
-  
-    if (!form.value.username) {
-      errors.value.username = 'El nombre de usuario es obligatorio.';
-    }
-  
-    if (!form.value.email) {
-      errors.value.email = 'El correo electrónico es obligatorio.';
-    }
-  
-    if (!form.value.password) {
-      errors.value.password = 'La contraseña es obligatoria.';
-    }
+import axios from 'axios';
+import { useRouter } from 'vue-router';
 
-    if (!form.value.role) {
-      errors.value.role = 'Selecciona un rol.'; 
-    }
-  
-  
-    if (Object.values(errors.value).some(error => error !== '')) {
-      return;
-    }
-  
-    const response = await axios.post('http://127.0.0.1:5000/register', {
-      username: form.value.username,
-      email: form.value.email,
-      password: form.value.password,
-      rol:form.value.role
-    });
-  
-    console.log(response);
-  
-    router.push('/login'); // Redirige a la página de inicio de sesión después del registro
-  };
+const form = ref({
+  username: '',
+  email: '',
+  password: '',
+  role: '',
+  experience: ''  
+});
+const errors = ref({
+  username: '',
+  email: '',
+  password: '',
+  role: '',
+  experience: ''
+});
+
+const router = useRouter();
+
+const handleRegister = async () => {
+  errors.value = {};
+
+  // Validaciones de campos de formulario existentes
+
+  if (!form.value.experience) {
+    errors.value.experience = 'Selecciona tu experiencia.';
+  }
+
+  if (Object.values(errors.value).some(error => error !== '')) {
+    return;
+  }
+
+  // Envío de datos al backend
+  const response = await axios.post('http://127.0.0.1:5000/register', {
+    username: form.value.username,
+    email: form.value.email,
+    password: form.value.password,
+    rol: form.value.role,
+    experience: form.value.experience  
+  });
+
+  console.log(response);
+
+  router.push('/login'); // Redirige a la página de inicio de sesión después del registro
+};
 </script>
 
 <template>
-  <div>
-    <h1 class="text-center">Registro de Usuario</h1>
+  <div class="container">
+  <div class="form-container"></div>
+  <div><h1 class="text-center">Registro de Usuario</h1>
     <div class="card">
       <div class="card-body">
         <form @submit.prevent="handleRegister">
@@ -86,10 +80,20 @@
             </select>
             <div class="text-danger">{{ errors.rol }}</div>
           </div> 
-
+         <div v-if="form.role === 'evaluator'" class="mb-3">
+    <label for="experience" class="form-label">Experiencia</label>
+    <select v-model="form.experience" class="form-select" id="experience">
+        <option value="" disabled>Selecciona tu experiencia</option>
+        <option value="novato">Novato</option>
+        <option value="experto">Experto</option>
+    </select>
+    <div class="text-danger">{{ errors.experience }}</div>
+</div>
           <button type="submit" class="btn btn-primary">Registrar Usuario</button>
         </form>
       </div>
     </div>
   </div>
+  </div>
 </template>
+

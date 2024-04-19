@@ -29,6 +29,7 @@
     "vue-clipboard2": "^0.3.3",
     "vue-gauge": "^1.0.3",
     "vue-router": "^4.2.4",
+    "vuex": "^4.1.0",
     "xmldom": "^0.6.0"
   },
   "devDependencies": {

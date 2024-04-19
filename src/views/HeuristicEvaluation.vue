@@ -8,6 +8,9 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
+
+
+
 // fragmento de código que inicializa  variables para almacenar datos relacionados con 
 // problems y observations, y utiliza Vue Router para acceder a la ruta actual y al enrutador.
 const route = useRoute();
@@ -252,139 +255,106 @@ const exportChartToPDF = async () => {
     // fragmento de código para agregar la imagen de la tabla al PDF debajo de la gráfica
     pdf.addImage(tableImageData, 'PNG', 10, 170, tableCanvas.width / 4, tableCanvas.height / 4);
 
-    // fragmento de código para guardar el documento PDF
-    pdf.save('graficaEvaluacion.pdf');
+  // fragmento de código para obtener el blob del PDF
+  const pdfBlob = pdf.output('blob');
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+
+    // Abre una nueva ventana con la vista previa del PDF
+    window.open(pdfUrl, '_blank');
   } catch (error) {
     console.error('Error exporting chart to PDF:', error);
   }
+  
 };
 
 
 </script>
 
-<template>
-    <div class="container">
-      <div class="row">
-        <div class="col-sm-12">
-      
-          <h1>Tabla de problemas</h1>
-         
-                    <h6>Se traen los Principios que se estan inclumpliento, ¿De donde salen? de la prueba que realiza el
-                        evaluador. Un vez
-                        se identifican que los problemas mostrados en la tabla son los mismos que se marcaron en la
-                        evaluación, se procede a
-                        evaluar cada uno de los problemas para hallar el nivel de usabilidad en el que esta la plataforma
-                    </h6>
-
-          <div class="container">
-            <table class="table table-danger">
-              <thead>
+  <template>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-12">
+        <h1>Tabla de problemas</h1>
+        <h6>Se traen los Principios que se están incumpliendo, ¿De dónde salen? de la prueba que realiza el evaluador. Una vez se identifican que los problemas mostrados en la tabla son los mismos que se marcaron en la evaluación, se procede a evaluar cada uno de los problemas para hallar el nivel de usabilidad en el que está la plataforma</h6>
+        <div class="container">
+          <table class="table table-danger">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Heurística Incumplida</th>
+                <th>Incidencias</th>
+                <th>Severidad</th>
+                <th>Frecuencia</th>
+                <th>Criticidad</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in problems" :key="item.name">
+                <td>{{ item.name }}</td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.hi }}</td>
+                <td>{{ item.incidents }}</td>
+                <td>
+                  <div>
+                    <select class="form-select" id="severitySelect" aria-label="Severity select" v-model="item.severity">
+                      <option v-for="option in options" :key="option.value" :value="option.value">{{ option.text }}</option>
+                    </select>
+                  </div>
+                </td>
+                <td>
+                  <div>
+                    <select class="form-select" id="frequencySelect" aria-label="Frequency select" v-model="item.frequency">
+                      <option v-for="option in options" :key="option.value" :value="option.value">{{ option.text }}</option>
+                    </select>
+                  </div>
+                </td>
+                <td>{{ item.criticism = parseInt(item.severity) + parseInt(item.frequency) }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div>
+            <div class="container">
+              <h1>Gráficas de Porcentaje</h1>
+              <div>
+                <canvas id="pie-chart"></canvas>
+              </div>
+              <div class="tablePorc">
+                <button class="btn btn-primary" @click="exportChartToPDF">Exportar gráfica a PDF</button>
                 <tr>
-                  <th>Nombre</th>
-                  <th>Descripción</th>
-                  <th>Heuristica Incumplida</th>
-                  <th>Incidencias</th>
-                  <th>Severidad</th>
-                  <th>Frecuencia</th>
-                  <th>Criticidad</th>
-                </tr>
-              </thead>
-              <!-- Table body -->
-              <tbody>
-                <!-- Filas para mostrar problemas -->
-                <tr v-for="item in problems" :key="item.name">
-                 
-                  <td>{{ item.name }}</td>
-                  <td>{{ item.description }}</td>
-                  <td>{{ item.hi }}</td>
-                  <td>{{ item.incidents }}</td>
-                  <td>
-                    <div>
-                      <select class="form-select" id="severitySelect" aria-label="Severity select"
-                        v-model="item.severity">
-                        <option v-for="option in options" :key="option.value" :value="option.value">
-                          {{ option.text }}
-                        </option>
-                      </select>
-                    </div>
-                  </td>
-                  <td>
-                    <div>
-                      <select class="form-select" id="frequencySelect" aria-label="Frequency select"
-                        v-model="item.frequency">
-                        <option v-for="option in options" :key="option.value" :value="option.value">
-                          {{ option.text }}
-                        </option>
-                      </select>
-                    </div>
-                  </td>
-                  <td>{{ item.criticism = parseInt(item.severity) + parseInt(item.frequency) }}</td>
-                </tr>
-
-               
-              </tbody>
-            </table>
-            <div>
-         </div>
-        
-   
-   <div class="container">
-      <h1>Gráficas de Porcentaje</h1>
-    <div>
-       <canvas id="pie-chart"></canvas>       
-    </div>
-  <div class="tablePorc">
-      <!-- en ela siguiente tabla se mostrarán los nombres de las columnas, sumas totales y porcentajes -->
-      <!-- Fila total: resultado suma de columnas -->
-      <button class="btn btn-primary" @click="exportChartToPDF">Exportar gráfica a PDF</button>   
-               
-             <tr>
-                <td> Nombre Columna :</td>
-                
+                  <td>Nombre Columna :</td>
                   <td>Severity</td>
                   <td>Frequency</td>
                   <td>Criticism</td>
-              </tr> 
-               
+                </tr>
                 <tr>
-                  <td> resultado suma cada columna :</td>
-                  
+                  <td>resultado suma cada columna :</td>
                   <td>{{ getColumnSum('severity') }}</td>
                   <td>{{ getColumnSum('frequency') }}</td>
                   <td>{{ getColumnSum('criticism') }}</td>
                 </tr>
-  
-                <!-- Percentaje total: de cada resultado de la suma de de las columnas -->
                 <tr>
                   <td>Percentaje a resultado suma:</td>
-                
                   <td>{{ getPercentage('severity') }}</td>
                   <td>{{ getPercentage('frequency') }}</td>
                   <td>{{ getPercentage('criticism') }}</td>
-                 
                 </tr>
-
                 <tr>
                   <td>Recomendación:</td>
                   <td colspan="6">{{ getRecommendation() }}</td>
                 </tr>
-                  <!-- Muestra el porcentaje total de todas las columnas -->
                 <tr>
                   <td>Promedio Porcentaje</td>
-                  <td>   {{ getTotalPercentage() }}</td>
+                  <td>{{ getTotalPercentage() }}</td>
                 </tr>
-               
-        
-       </div>
-                
-            <button class="btn btn-primary" @click="saveEvaluation()">Guardar evaluacion</button>
+              </div>
+              <button class="btn btn-primary" @click="saveEvaluation()">Guardar evaluación</button>
+            </div>
           </div>
         </div>
       </div>
-  
       <div class="col-sm-12">
         <h1>Evaluación de Problemas</h1>
-  
         <div class="container">
           <h1>Escala de severidad y frecuencia</h1>
           <h6>Descripción de la tabla</h6>
@@ -404,8 +374,7 @@ const exportChartToPDF = async () => {
               </tr>
               <tr>
                 <th scope="row">1</th>
-                <td>Problema "Cosmético"; no necesita ser resuelto a menos que se disponga de tiempo extra en el proyecto.
-                </td>
+                <td>Problema "Cosmético"; no necesita ser resuelto a menos que se disponga de tiempo extra en el proyecto.</td>
                 <td>1-10%</td>
               </tr>
               <tr>
@@ -428,9 +397,9 @@ const exportChartToPDF = async () => {
         </div>
       </div>
     </div>
-    </div>
-    
-  </template>
+  </div>
+</template>
+
 
 <!-- Estilos de la tabla que muestra los porcentajes y recomendación -->
 <style>

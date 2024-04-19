@@ -2,7 +2,7 @@
 <template>
   <!-- fragmento de codigo que muestra  bienvenida en la página web -->
   <div>
-    <div class="container">
+    <div class="containers">
       <img src="../assets/lading/imagen2.png" alt="WhatsApp" >
       <div class="t1">
         <h1>Bienvenido a Heuristicas App</h1> 
@@ -75,6 +75,8 @@
 
 <style scoped>
 
+
+
 body {
    font-family: 'Poppins', sans-serif;
    margin: 0;
@@ -82,7 +84,7 @@ body {
  
 }
 
-.container {
+.containers {
    text-align: center;
    padding: 50px 20px;
 }

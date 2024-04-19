@@ -1,6 +1,5 @@
 <template>
-  <h1>Crea tu prueba de analisis heuristico</h1>
-  <h2>Añadir prueba</h2>
+  <h3>Crea tu prueba de análisis heurístico</h3>
   <div class="container">
     <div class="row">
       <div class="col-sm-6">
@@ -44,10 +43,11 @@
               <td>{{ owner.url }}</td>
               <td>{{ owner.description }}</td>
               <td>
-                <button @click="copylink(owner)" class="btn btn-primary">Ir a Encuesta</button>
-                <button @click="goToEvaluate(owner.id)" class="btn btn-success">Evaluar</button>
-                <button @click="goToEvaluationResults(owner.id)" class="btn btn-warning">Resultados</button>
-                <button @click="handleDeleteHTest(owner.id)" class="btn btn-danger"> Eliminar</button>
+<button @click="copylink(owner)" class="btn btn-primary" v-if="rol === 'evaluator' || rol === 'administrator'">Ir a Encuesta</button>
+<button @click="goToEvaluate(owner.id)" class="btn btn-success" v-if="rol === 'owner'|| rol === 'administrator'">Evaluar</button>
+<button @click="goToEvaluationResults(owner.id)" class="btn btn-warning" v-if="rol === 'owner'|| rol === 'administrator'">Resultados</button>
+<button @click="handleDeleteHTest(owner.id)" class="btn btn-danger" v-if="rol === 'administrator' || rol === 'evaluator'|| rol === 'owner'">Eliminar</button>
+
               </td>
             </tr>
           </tbody>
@@ -59,8 +59,13 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import { useRouter } from 'vue-router'
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '../stores/useAuthStore';
 
+// Utiliza un único ref para el rol
+const rol = ref('');
+
+const authStore = useAuthStore();
 const router = useRouter();
 const form = ref({
   name: '',
@@ -86,7 +91,7 @@ const handleSaveHTest = async () => {
     errors.value.url = 'La URL es obligatoria.';
   }
   if (!form.value.description) {
-    errors.value.description = 'La Descripcion es obligatorio.';
+    errors.value.description = 'La descripción es obligatoria.'; // Corregido el mensaje
   }
 
   // Verifica si hay errores
@@ -95,19 +100,20 @@ const handleSaveHTest = async () => {
   }
 
   // Si no hay errores, procede con la solicitud HTTP
-  const response = await axios.post('http://127.0.0.1:5000/owners', {
-    name: form.value.name,
-    url: form.value.url,
-    description: form.value.description
-  });
+  try {
+    const response = await axios.post('http://127.0.0.1:5000/owners', {
+      name: form.value.name,
+      url: form.value.url,
+      description: form.value.description
+    });
 
-  const responseuser = await axios.get('http://127.0.0.1:5000/user' );
+    console.log(response);
 
-  console.log(response);
-  console.log(responseuser);
-
-  // Después de guardar, obtén nuevamente la lista de propietarios
-  await refreshOwnersList();
+    // Después de guardar, obtén nuevamente la lista de propietarios
+    await refreshOwnersList();
+  } catch (error) {
+    console.error('Error al guardar:', error); // Manejo de errores de la solicitud HTTP
+  }
 };
 
 const handleDeleteHTest = async (id) => {
@@ -123,31 +129,37 @@ const handleDeleteHTest = async (id) => {
 };
 
 const copylink = (owner) => {
-  console.log("presionadocopybutton", owner.id)
-  var url = "/o/" + owner.id + "/checklist"
+  console.log("presionado copy button", owner.id);
+  const url = `/o/${owner.id}/checklist`; // Utiliza const para definir la URL
   router.push(url);
-}
+};
 
 const goToEvaluate = (ownerId) => {
   console.warn(ownerId);
-  router.push('/o/' + ownerId + '/evaluacion');
-}
-const refreshOwnersList = async () => {
-  const rgetallproducts = await axios.get('http://127.0.0.1:5000/owners');
-  owners.value = rgetallproducts.data.owners; // Asigna los datos correctamente
+  router.push(`/o/${ownerId}/evaluacion`);
+};
 
-  console.log(owners.value);
+const refreshOwnersList = async () => {
+  try {
+    const response = await axios.get('http://127.0.0.1:5000/owners');
+    owners.value = response.data.owners; // Asigna los datos correctamente
+    console.log(owners.value);
+  } catch (error) {
+    console.error('Error al obtener la lista de propietarios:', error);
+  }
 };
 
 const goToEvaluationResults = (ownerId) => {
   console.warn(ownerId);
-  router.push('/o/' + ownerId + '/resultadoevaluacion');
-}
+  router.push(`/o/${ownerId}/resultadoevaluacion`);
+};
+
 onMounted(async () => {
+  rol.value = authStore.role;
   // Cuando el componente se monta, obtén la lista de propietarios
   await refreshOwnersList();
 });
 
 
-
 </script>
+
