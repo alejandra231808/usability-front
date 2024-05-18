@@ -1,9 +1,11 @@
 <template>
-  <h3>Crea tu prueba de análisis heurístico</h3>
+ 
   <div class="container">
     <div class="row">
       <div class="col-sm-6">
+        <div class="col-sm-6" v-if="rol === 'administrator'">
         <form @submit.prevent="handleSaveHTest">
+          <h3>Crea tu prueba de análisis heurístico</h3>
           <div class="mb-3">
             <label for="name" class="form-label">Nombre de la prueba</label>
             <input type="text" class="form-control" v-model="form.name" id="name" aria-describedby="nameHelp">
@@ -27,6 +29,55 @@
           <button type="submit" class="btn btn-primary">Añadir Prueba</button>
         </form>
       </div>
+      </div>
+
+      <div class="col-sm-6" v-if="rol === 'evaluator'">
+  <!-- Formulario para el evaluador -->
+  <form @submit.prevent="handleSaveEvaluadorTest" v-if="rol==='evaluator'">
+    <h1>información del usuario Evaluador</h1>
+    <div class="mb-3">
+      <label for="age" class="form-label">Edad</label>
+      <input type="text" class="form-control" v-model="evaluadorForm.age" id="age">
+    </div>
+    <div class="mb-3">
+      <label for="profession" class="form-label">Profesión</label>
+      <input type="text" class="form-control" v-model="evaluadorForm.profession" id="profession">
+    </div>
+    <div class="mb-3">
+      <label for="status" class="form-label">Estatus</label>
+      <input type="text" class="form-control" v-model="evaluadorForm.status" id="status">
+    </div>
+    <div class="mb-3">
+      <label for="economicLevel" class="form-label">Nivel socioeconómico</label>
+      <input type="text" class="form-control" v-model="evaluadorForm.economicLevel" id="economicLevel">
+    </div>
+    <div class="mb-3">
+      <label for="technologyExperience" class="form-label">Experiencia tecnológica</label>
+      <input type="text" class="form-control" v-model="evaluadorForm.technologyExperience" id="technologyExperience">
+    </div>
+    <div class="mb-3">
+      <label for="personality" class="form-label">Personalidad</label>
+      <input type="text" class="form-control" v-model="evaluadorForm.personality" id="personality">
+    </div>
+    <div class="mb-3">
+      <label for="description">Descripción</label>
+      <textarea class="form-control" v-model="evaluadorForm.description" id="description" rows="3"></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="objectives">Objetivos</label>
+      <textarea class="form-control" v-model="evaluadorForm.objectives" id="objectives" rows="3"></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="habits">Hábitos, habilidades y frustraciones</label>
+      <textarea class="form-control" v-model="evaluadorForm.habits" id="habits" rows="3"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary" @click="handleSaveEvaluadorTest">Guardar</button>
+
+  </form>
+
+</div>
+
+
       <div class="col-sm-6">
         <table class="table table-primary table-striped-columns">
           <thead>
@@ -56,6 +107,8 @@
     </div>
   </div>
 </template>
+
+
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
@@ -78,10 +131,46 @@ const errors = ref({
   description: '',
 });
 
+
+const evaluadorForm = ref({
+  age: '',
+  profession: '',
+  status: '',
+  economicLevel: '',
+  technologyExperience: '',
+  personality: '',
+  description: '',
+  objectives: '',
+  habits: ''
+});
+
 const owners = ref([]);
 
+const evaluadorFormCompleted = ref(false);
+
+const handleSaveEvaluadorTest = async () => {
+
+  try {
+        const response = await axios.post('http://127.0.0.1:5000/guardar_evaluador', evaluadorForm.value);
+        console.log(response.data.message); // Manejar la respuesta del backend si es necesario
+    } catch (error) {
+        console.error('Error al enviar datos del evaluador al backend:', error);
+        // Manejar errores si es necesario
+    }
+
+  evaluadorFormCompleted.value = true;
+};
+
 const handleSaveHTest = async () => {
-  errors.value = {}; // Reinicia los errores antes de la validación
+  errors.value = {}; 
+
+  if (!evaluadorForm.value.user_id) {
+    errors.value.user_id = 'El User ID es obligatorio.';
+  }
+
+  if (!evaluadorForm.value.user_id) {
+    errors.value.user_id = 'la.';
+  }
 
   if (!form.value.name) {
     errors.value.name = 'El nombre de la prueba es obligatorio.';

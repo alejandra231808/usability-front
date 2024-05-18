@@ -21,17 +21,9 @@ const errors = ref({
 const router = useRouter();
 
 const handleRegister = async () => {
+  console.log(form.value)
   errors.value = {};
 
-  // Validaciones de campos de formulario existentes
-
-  if (!form.value.experience) {
-    errors.value.experience = 'Selecciona tu experiencia.';
-  }
-
-  if (Object.values(errors.value).some(error => error !== '')) {
-    return;
-  }
 
   // Envío de datos al backend
   const response = await axios.post('http://127.0.0.1:5000/register', {

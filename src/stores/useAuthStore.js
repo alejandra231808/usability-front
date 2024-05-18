@@ -4,7 +4,7 @@ export const useAuthStore = defineStore('auth', {
     state: () => ({
         isLoggedIn: localStorage.getItem('isLoggedIn') === 'true',
         role: localStorage.getItem('role') || 'role',
-        experience: localStorage.getItem('experience') || '', 
+        experience: localStorage.getItem('experto') || 'novato', 
     }),
 
     actions: {

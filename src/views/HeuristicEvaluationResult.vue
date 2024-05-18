@@ -78,36 +78,34 @@ const infode = () => {
         defaultStyle: {
             // alignment: 'justify'
         }
-
-
     }
-
-    
-
     pdfMake.createPdf(dd).open();
 
 };
-
-
-
 const exportPDF = () => {
     infode();
 }
-
 </script>
 
 <template>
     <div class="container-fluid">
-        <div><button class="btn btn-success" @click="exportPDF()">Descargar PDF</button></div>
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title">Resultados</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">{{ EvaluationDescprition }}</p>
-                    </div>
+    <div class="row">
+        <div class="col">
+            <button class="btn btn-success" @click="exportPDF()">Descargar PDF Tabla Problemas</button>
+        </div>
+        <div class="col">
+            <button class="btn btn-success" @click="exportPDF()">Descargar PDF Checklist</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Resultados</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ EvaluationDescprition }}</p>
+                </div>
                 </div>
                 <div class="card mt-3">
                     <div class="card-header">

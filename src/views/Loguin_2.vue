@@ -7,7 +7,8 @@ import { useAuthStore } from '../stores/useAuthStore';
 const form = ref({
   username: '',
   password: '',
-  role: '' 
+  role: '' ,
+  experience:''
 });
 
 const errors = ref({
@@ -39,18 +40,16 @@ const handleLogin = async () => {
       password: form.value.password
     });
 
-    console.log(response.data.user.rol);
-
     const rol = response.data.user.rol;
-    let experience = '';
+    let experiencia = 'experience'; // Inicializamos la experiencia como vacía por defecto
 
-    // Verificar si el rol es 'evaluador' y obtener la experiencia
+    // Verificar si el rol es 'evaluador'
     if (rol === 'evaluador') {
-      experience = response.data.user.experience;
+      experiencia = response.data.user.experiencia; // Asignar la experiencia si es evaluador
     }
 
     // Iniciar sesión con el rol y la experiencia correspondientes
-    useAuth.login(rol, experience);
+    useAuth.login(rol, experiencia);
 
     router.push('/pruebasheuristicas'); 
     
@@ -58,6 +57,7 @@ const handleLogin = async () => {
     console.error(error);
   }
 };
+
 
 
 </script>
