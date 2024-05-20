@@ -40,16 +40,10 @@ const handleLogin = async () => {
       password: form.value.password
     });
 
-    const rol = response.data.user.rol;
-    let experiencia = 'experience'; // Inicializamos la experiencia como vacía por defecto
+    const { username, rol, experiencia } = response.data.user; // Obtener los datos del usuario desde la respuesta
 
-    // Verificar si el rol es 'evaluador'
-    if (rol === 'evaluador') {
-      experiencia = response.data.user.experiencia; // Asignar la experiencia si es evaluador
-    }
-
-    // Iniciar sesión con el rol y la experiencia correspondientes
-    useAuth.login(rol, experiencia);
+    // Almacenar el nombre de usuario, el rol y la experiencia en el store de autenticación
+    useAuth.login(rol, username, experiencia);
 
     router.push('/pruebasheuristicas'); 
     

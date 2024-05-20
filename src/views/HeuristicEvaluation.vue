@@ -255,17 +255,19 @@ const exportChartToPDF = async () => {
     // fragmento de código para agregar la imagen de la tabla al PDF debajo de la gráfica
     pdf.addImage(tableImageData, 'PNG', 10, 170, tableCanvas.width / 4, tableCanvas.height / 4);
 
-  // fragmento de código para obtener el blob del PDF
-  const pdfBlob = pdf.output('blob');
+    // Fragmento de código para obtener el blob del PDF y la URL
+    const pdfBlob = pdf.output('blob');
     const pdfUrl = URL.createObjectURL(pdfBlob);
 
-    // Abre una nueva ventana con la vista previa del PDF
-    window.open(pdfUrl, '_blank');
+    // Guarda la URL del PDF en el almacenamiento local
+    localStorage.setItem('cachedPDF', pdfUrl);
+
   } catch (error) {
     console.error('Error exporting chart to PDF:', error);
   }
-  
 };
+
+
 
 
 </script>
@@ -320,7 +322,7 @@ const exportChartToPDF = async () => {
                 <canvas id="pie-chart"></canvas>
               </div>
               <div class="tablePorc">
-                <button class="btn btn-primary" @click="exportChartToPDF">Exportar gráfica a PDF</button>
+              
                 <tr>
                   <td>Nombre Columna :</td>
                   <td>Severity</td>
@@ -348,6 +350,7 @@ const exportChartToPDF = async () => {
                   <td>{{ getTotalPercentage() }}</td>
                 </tr>
               </div>
+              <button class="btn btn-primary" @click="exportChartToPDF">Crear/Exportar PDF</button>
               <button class="btn btn-primary" @click="saveEvaluation()">Guardar evaluación</button>
             </div>
           </div>

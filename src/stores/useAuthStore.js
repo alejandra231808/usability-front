@@ -4,16 +4,19 @@ export const useAuthStore = defineStore('auth', {
     state: () => ({
         isLoggedIn: localStorage.getItem('isLoggedIn') === 'true',
         role: localStorage.getItem('role') || 'role',
-        experience: localStorage.getItem('experto') || 'novato', 
+        username: localStorage.getItem('username') || 'usurname',
+        experience: localStorage.getItem('experince') || 'experience', 
     }),
 
     actions: {
-        login(role, experience) { 
+        login(role, username,experience) { 
             this.isLoggedIn = true;
             this.role = role;
+            this.username = username;
             this.experience = experience; 
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('role', role);
+            localStorage.setItem('username', username);
             localStorage.setItem('experience', experience); 
         },
 
@@ -23,6 +26,7 @@ export const useAuthStore = defineStore('auth', {
             this.experience = ''; // Limpiar la experiencia al cerrar sesión
             localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('role');
+            localStorage.removeItem('username');
             localStorage.removeItem('experience'); // Eliminar la experiencia del localStorage
         },
     },

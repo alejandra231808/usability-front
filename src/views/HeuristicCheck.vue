@@ -825,7 +825,8 @@
 
     </tbody>
 </table>
-<div><button @click="generarPDF">Generar PDF</button></div>
+
+<div><button class="btn btn-primary" @click="generarPDF">Crear/exportar PDF a Resultados</button></div>
  <br>
  <div><button type="button" class="btn btn-primary btn-lg" @click="enviarinfo">Enviar</button></div>
     <br>
@@ -1080,9 +1081,37 @@ const getownerInfo = async (id) => {
 
 
 //generar pdf para resultados de la checklist
-const generarPDF = async (nombreUsuario, experienciaUsuario) => {
+const obtenerRolUsuarioLogueado = () => {
+    // Obtener el rol del usuario logueado del localStorage
+    const role = localStorage.getItem('role');
+    return role;
+};
+
+const obtenerUsuarioLogueado = () => {
+    // Obtener el nombre de usuario logueado del localStorage
+    const username = localStorage.getItem('username');
+    return username;
+};
+
+const guardarPDFcache = (pdfUrl) => {
+    localStorage.setItem('cachedPDF', pdfUrl);
+};
+
+const mostrarPDFGenerado = (pdfUrl) => {
+    const eventoPDF = new CustomEvent('pdf-generado', { detail: pdfUrl });
+    window.dispatchEvent(eventoPDF);
+};
+
+window.addEventListener('pdf-generado', (event) => {
+    const pdfUrl = event.detail;
+    guardarPDFcache(pdfUrl); // Corregido el nombre de la función
+});
+
+const generarPDF = async ( experienciaUsuario,) => {
  
     const doc = new jsPDF();
+    const role = obtenerRolUsuarioLogueado();
+    const username = obtenerUsuarioLogueado();
      const aprobadoNoAprobado = (value) => {
         return value ? "Aprobado" : "No Aprobado";
     };
@@ -1090,11 +1119,13 @@ const generarPDF = async (nombreUsuario, experienciaUsuario) => {
     
       // Agregar contenido al PDF
     doc.text("Resultado de la Lista de Chequeo", 10, 10);
-    doc.text(`Usuario Evaluador: ${nombreUsuario}`, 10, 20); 
-    doc.text(`Experiencia: ${experienciaUsuario}`, 10, 30); 
+    doc.text(`Rol : ${role}`, 10, 20); 
+    doc.text(`nombre de usuario : ${username}`, 10, 30); 
+    doc.text(`Experiencia: ${experienciaUsuario}`, 10, 40); 
 
     // Configurar posición inicial para las tablas
     let startY = 40;
+
 
     
     const data1 = [
@@ -1372,11 +1403,11 @@ const tableData = doc.autoTableHtmlToJson(table);
     const pdfBlob = doc.output('blob');
     const pdfUrl = URL.createObjectURL(pdfBlob);
 
-    // Abrir el PDF en una nueva pestaña
-    const eventoPDF = new CustomEvent('pdf-generado', { detail: pdfUrl });
-    
-    window.dispatchEvent(eventoPDF);
-    window.open(pdfUrl, '_blank');
+   
+    // Guardar la URL del PDF en la caché local
+    guardarPDFcache(pdfUrl);
+
+   
 };
 
 </script>

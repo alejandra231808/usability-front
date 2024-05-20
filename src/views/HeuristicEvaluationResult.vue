@@ -12,6 +12,30 @@ const evaluationResults = ref([]);
 const ownerId = ref();
 const EvaluationDescprition = ref("A continuación se presentan los resultados de la evaluación de usabilidad, utilizando el método de prueba denominado analisis heuristico. Se muestra la tabla de resultados con sus respectivos niveles de criterios de usabilidad");
 //const exportValues = ref();
+//pdf checklist
+const mostrarPDFDesdeCache = () => {
+    const cachedPDF = localStorage.getItem('cachedPDF');
+    if (cachedPDF) {
+        window.open(cachedPDF, '_blank');
+    } else {
+        console.log('No hay PDF en caché');
+    }
+};
+
+// Función para abrir el PDF tabla de problemas guardado en caché
+const openCachedPDF = () => {
+  // Obtiene el PDF URL guardado en caché
+  const cachedPDFUrl = localStorage.getItem('cachedPDF');
+
+  if (cachedPDFUrl) {
+    // Abre una nueva ventana con la vista previa del PDF guardado en caché
+    window.open(cachedPDFUrl, '_blank');
+  } else {
+    // No se encontró ningún PDF en caché, muestra un mensaje de error o maneja la situación de otra manera
+    console.error('No hay PDF guardado en caché.');
+  }
+};
+
 onMounted(() => {
     ownerId.value = route.params.ownerId
     getEvaluationResults();
@@ -23,25 +47,16 @@ const getEvaluationResults = async () => {
         const response = await axios.get(`http://127.0.0.1:5000/evaluations/${ownerId.value}`);
         evaluationResults.value = response.data;
         console.log("Informacion del get", evaluationResults.value);
-        
-        // Llama a la función para generar el PDF con los resultados y la gráfica
-        infode();
     } catch (error) {
         console.error("Error al obtener los resultados de la evaluación:", error);
     }
 };
-
 const infode = () => {
-
     const valuesArray = toRaw(evaluationResults.value).map(obj => Object.values(obj));
     let arreglofinal = [['Código', 'Descripción', 'Heuristica Incumplida', 'Criticismo', 'Frecuencia', "Severidad", 'Incidentes']];
     valuesArray.forEach(value => {
-
         arreglofinal.push([value[5], value[1], value[3], value[0], value[2], value[6], value[4]]);
-    }
-    );
-    
-    console.log(arreglofinal);
+    });
     var dd = {
         content: [
             { text: 'Tables', style: 'header' },
@@ -91,11 +106,11 @@ const exportPDF = () => {
     <div class="container-fluid">
     <div class="row">
         <div class="col">
+            <button class="btn btn-success" @click="openCachedPDF()">Descargar PDF Gráfica/cálculos tabla problemas</button>
             <button class="btn btn-success" @click="exportPDF()">Descargar PDF Tabla Problemas</button>
+            <button class="btn btn-success" @click="mostrarPDFDesdeCache()">Descargar PDF lista de chequeo </button>
         </div>
-        <div class="col">
-            <button class="btn btn-success" @click="exportPDF()">Descargar PDF Checklist</button>
-        </div>
+       
     </div>
     <div class="row">
         <div class="col-12">
@@ -133,6 +148,8 @@ const exportPDF = () => {
                                     <td>{{ evaluation.frequency }}</td>
                                     <td>{{ evaluation.severity }}</td>
                                     <td>{{ evaluation.incidents }}</td>
+                                    
+                                  
 
                                 </tr>
                             </tbody>
@@ -142,4 +159,5 @@ const exportPDF = () => {
             </div>
         </div>
     </div>
+    
 </template>

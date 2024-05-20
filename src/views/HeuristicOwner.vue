@@ -164,13 +164,13 @@ const handleSaveEvaluadorTest = async () => {
 const handleSaveHTest = async () => {
   errors.value = {}; 
 
-  if (!evaluadorForm.value.user_id) {
-    errors.value.user_id = 'El User ID es obligatorio.';
-  }
+  // if (!evaluadorForm.value.user_id) {
+  //   errors.value.user_id = 'El User ID es obligatorio.';
+  // }
 
-  if (!evaluadorForm.value.user_id) {
-    errors.value.user_id = 'la.';
-  }
+  // if (!evaluadorForm.value.user_id) {
+  //   errors.value.user_id = 'la.';
+  // }
 
   if (!form.value.name) {
     errors.value.name = 'El nombre de la prueba es obligatorio.';
