@@ -229,12 +229,17 @@ const exportChartToPDF = async () => {
   try {
     const pdf = new jsPDF();
     
-    // fragmento de código para convertir la gráfica a imagen
+    // Texto a mostrar en el PDF
+    const text = "Este PDF muestra la gráfica de porcentaje de severidad,frecuencia y criticidad como resultado de la evaluación de la tabla de problemas , además agrega una tabla con otros datos que la gráfica no indica como el porcentaje promedio de problemas y la debida recomendación para mejorar la prueba de usabilidad.";  
+    // Divide el texto en líneas que quepan dentro del ancho del PDF (menos los márgenes)
+    const textLines = pdf.splitTextToSize(text, pdf.internal.pageSize.width - 20);
+    pdf.text(textLines, 10, 10);
+
     const chartImage = await html2canvas(chartCanvas);
     const chartImageData = chartImage.toDataURL('image/png');
 
     // fragmento de código para agregar la imagen de la gráfica al PDF
-    pdf.addImage(chartImageData, 'PNG', 10, 10, 180, 150);
+    pdf.addImage(chartImageData, 'PNG', 10, 40, 120, 100);
 
     // fragmento de código para crear un lienzo para la tabla
     const tableCanvas = document.createElement('canvas');

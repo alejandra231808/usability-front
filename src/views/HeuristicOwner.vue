@@ -48,24 +48,17 @@
       <input type="text" class="form-control" v-model="evaluadorForm.status" id="status">
     </div>
     <div class="mb-3">
-      <label for="economicLevel" class="form-label">Nivel socioeconómico</label>
-      <input type="text" class="form-control" v-model="evaluadorForm.economicLevel" id="economicLevel">
-    </div>
-    <div class="mb-3">
       <label for="technologyExperience" class="form-label">Experiencia tecnológica</label>
-      <input type="text" class="form-control" v-model="evaluadorForm.technologyExperience" id="technologyExperience">
+      <input type="text" class="form-control" v-model="evaluadorForm.technological_experience" id="technologyExperience">
     </div>
+  
     <div class="mb-3">
-      <label for="personality" class="form-label">Personalidad</label>
-      <input type="text" class="form-control" v-model="evaluadorForm.personality" id="personality">
-    </div>
-    <div class="mb-3">
-      <label for="description">Descripción</label>
-      <textarea class="form-control" v-model="evaluadorForm.description" id="description" rows="3"></textarea>
+      <label for="description">Descripción/persoanlidad</label>
+      <textarea class="form-control" v-model="evaluadorForm.personality_description" id="description" rows="3"></textarea>
     </div>
     <div class="mb-3">
       <label for="objectives">Objetivos</label>
-      <textarea class="form-control" v-model="evaluadorForm.objectives" id="objectives" rows="3"></textarea>
+      <textarea class="form-control" v-model="evaluadorForm.goals" id="objectives" rows="3"></textarea>
     </div>
     <div class="mb-3">
       <label for="habits">Hábitos, habilidades y frustraciones</label>
@@ -110,16 +103,15 @@
 
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/useAuthStore';
 
-// Utiliza un único ref para el rol
-const rol = ref('');
-
 const authStore = useAuthStore();
 const router = useRouter();
+const username = ref('');
+const rol = ref('');
 const form = ref({
   name: '',
   url: '',
@@ -131,18 +123,33 @@ const errors = ref({
   description: '',
 });
 
+const obtenerUsuarioLogueado = () => {
+  username.value = localStorage.getItem('username');
 
-const evaluadorForm = ref({
+};
+
+onMounted(() => {
+  obtenerUsuarioLogueado();
+});
+
+const evaluadorForm = computed(() => ({
+  username: username.value,
   age: '',
   profession: '',
   status: '',
-  economicLevel: '',
-  technologyExperience: '',
-  personality: '',
+  technological_experience: '',
+  personality_description: '',
   description: '',
-  objectives: '',
-  habits: ''
-});
+  goals: '',
+  habits: '',
+}));
+
+// Resto del código sin cambios
+
+
+
+
+
 
 const owners = ref([]);
 
@@ -151,13 +158,13 @@ const evaluadorFormCompleted = ref(false);
 const handleSaveEvaluadorTest = async () => {
 
   try {
-        const response = await axios.post('http://127.0.0.1:5000/guardar_evaluador', evaluadorForm.value);
-        console.log(response.data.message); // Manejar la respuesta del backend si es necesario
+        const response = await axios.post('http://127.0.0.1:5000/evaluator_info', evaluadorForm.value);
+        console.log(response.data.message);
     } catch (error) {
         console.error('Error al enviar datos del evaluador al backend:', error);
-        // Manejar errores si es necesario
+       
     }
-
+console.log(evaluadorForm.value)
   evaluadorFormCompleted.value = true;
 };
 
@@ -201,7 +208,7 @@ const handleSaveHTest = async () => {
     // Después de guardar, obtén nuevamente la lista de propietarios
     await refreshOwnersList();
   } catch (error) {
-    console.error('Error al guardar:', error); // Manejo de errores de la solicitud HTTP
+    console.error('Error al guardar:', error); 
   }
 };
 
@@ -210,7 +217,6 @@ const handleDeleteHTest = async (id) => {
     const response = await axios.delete(`http://127.0.0.1:5000/owners/${id}`);
     console.log(response);
 
-    // Después de eliminar, actualiza la lista de propietarios
     await refreshOwnersList();
   } catch (error) {
     console.error('Error al eliminar:', error);
@@ -219,7 +225,7 @@ const handleDeleteHTest = async (id) => {
 
 const copylink = (owner) => {
   console.log("presionado copy button", owner.id);
-  const url = `/o/${owner.id}/checklist`; // Utiliza const para definir la URL
+  const url = `/o/${owner.id}/checklist`;
   router.push(url);
 };
 
@@ -231,7 +237,7 @@ const goToEvaluate = (ownerId) => {
 const refreshOwnersList = async () => {
   try {
     const response = await axios.get('http://127.0.0.1:5000/owners');
-    owners.value = response.data.owners; // Asigna los datos correctamente
+    owners.value = response.data.owners;
     console.log(owners.value);
   } catch (error) {
     console.error('Error al obtener la lista de propietarios:', error);

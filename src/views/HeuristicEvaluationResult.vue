@@ -1,18 +1,17 @@
 <script setup>
-//import html2pdf from "html2pdf.js"
+
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import { ref, onMounted, toRaw } from 'vue';
-import { useRoute, /*useRouter*/ } from 'vue-router'
+import { useRoute,  } from 'vue-router'
 import axios from 'axios';
 const route = useRoute();
 //const router = useRouter();
 const evaluationResults = ref([]);
 const ownerId = ref();
 const EvaluationDescprition = ref("A continuación se presentan los resultados de la evaluación de usabilidad, utilizando el método de prueba denominado analisis heuristico. Se muestra la tabla de resultados con sus respectivos niveles de criterios de usabilidad");
-//const exportValues = ref();
-//pdf checklist
+
 const mostrarPDFDesdeCache = () => {
     const cachedPDF = localStorage.getItem('cachedPDF');
     if (cachedPDF) {
@@ -22,16 +21,16 @@ const mostrarPDFDesdeCache = () => {
     }
 };
 
-// Función para abrir el PDF tabla de problemas guardado en caché
+// Función abrir el PDF tabla de problemas guardado en caché
 const openCachedPDF = () => {
-  // Obtiene el PDF URL guardado en caché
+  // linea para  el PDF URL guardado en caché
   const cachedPDFUrl = localStorage.getItem('cachedPDF');
 
   if (cachedPDFUrl) {
     // Abre una nueva ventana con la vista previa del PDF guardado en caché
     window.open(cachedPDFUrl, '_blank');
   } else {
-    // No se encontró ningún PDF en caché, muestra un mensaje de error o maneja la situación de otra manera
+   
     console.error('No hay PDF guardado en caché.');
   }
 };
@@ -91,7 +90,7 @@ const infode = () => {
             }
         },
         defaultStyle: {
-            // alignment: 'justify'
+            
         }
     }
     pdfMake.createPdf(dd).open();
@@ -100,9 +99,13 @@ const infode = () => {
 const exportPDF = () => {
     infode();
 }
+
+
+
 </script>
 
 <template>
+
     <div class="container-fluid">
     <div class="row">
         <div class="col">

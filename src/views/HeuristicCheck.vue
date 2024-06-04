@@ -826,9 +826,64 @@
     </tbody>
 </table>
 
+<!-- tabla para mostrar la media de la lista de chequeo aprobados /no aprobados  -->
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Principio Heuristico</th>
+            <th>Aprobados(Sí)</th>
+            <th>media(si)</th>
+            <th>No Aprobados(No)</th>
+            <th>media(no)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Filas de la tabla -->
+        <tr v-for="(value, key) in sumatoria" :key="key">
+            <td>{{ obtenerNombrePrincipio(key) }}</td>
+            <td>{{ value.trueCount }}</td>
+            <td>{{ value.trueCount/2}}</td>
+            <td>{{ value.falseCount }}</td>
+            <td>{{ value.falseCount/2 }}</td>
+        </tr>
+        
+
+    </tbody>
+</table>
+
+<!-- tabla para mostrar  la diferencia de la lista de chequeo aprobados /no aprobados  -->
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Media(si)</th>
+            <th>Máximo posible</th>
+            <th>Diferencia</th>
+           
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Filas de la tabla -->
+        <tr v-for="(value, key) in sumatoria" :key="key">
+            
+            <td>{{ value.trueCount/2 }}</td>
+            <td>{{ maximoPosible[key] }}</td>
+            <td>{{ maximoPosible[key] - value.trueCount/2 }}</td>
+            
+        </tr>
+        
+
+    </tbody>
+</table>
+
+
+
 <div><button class="btn btn-primary" @click="generarPDF">Crear/exportar PDF a Resultados</button></div>
  <br>
- <div><button type="button" class="btn btn-primary btn-lg" @click="enviarinfo">Enviar</button></div>
+ <button class="btn btn-success" @click="enviarDatos">Enviar Datos a /porcentajechecklists</button>
+ <br>
+ <button class="btn btn-success" @click="mostrarPorcentajeCheckList">Obtener Porcentajes desde /porcentajechecklists</button>
+ <br>
+<div><button type="button" class="btn btn-primary btn-lg" @click="enviarinfo">Enviar</button></div>
     <br>
     <!-- se Utiliza un <iframe> para mostrar el PDF -->
     <iframe :src="pdfUrl" style="width: 100%; height: 600px;"></iframe> 
@@ -980,6 +1035,26 @@ const calcularSumaPrincipios = () => {
     return sumatoriaPorPrincipio;
 };
 
+const calcularMaximoPosible = () => {
+  const maximoPorPrincipio = {};
+
+  for (const key in Heuristics.value) {
+    if (Heuristics.value.hasOwnProperty(key)) {
+      if (!key.includes('owner_id') && !key.includes('OBSERVACIONH')) {
+        const principio = key.substring(0, 4); 
+
+        if (!maximoPorPrincipio.hasOwnProperty(principio)) {
+          maximoPorPrincipio[principio] = 0;
+        }
+
+        maximoPorPrincipio[principio]++;
+      }
+    }
+  }
+
+  return maximoPorPrincipio;
+}
+
 const actualizarSumaPrincipios= () => {
     const nuevaSuma = calcularSumaPrincipios();
     // Actualiza el valor de sumatoria
@@ -990,7 +1065,10 @@ const actualizarSumaPrincipios= () => {
 watch(Heuristics, actualizarSumaPrincipios, { deep: true });
 
 const sumatoria = ref(calcularSumaPrincipios());
+const maximoPosible = ref(calcularMaximoPosible())
 console.log(sumatoria);
+console.log(maximoPosible.value);
+
 
 //calcula el total de los si y no
 const calcularSumaTotal = () => {
@@ -1029,27 +1107,28 @@ const actualizarPorcentajes = () => {
 // Crear un watcher para observar los cambios en sumatoria
 watch(sumatoria, actualizarPorcentajes, { deep: true });
 
-//para mostrar el nombre del principio
-const obtenerNombrePrincipio = (clave) => {
+
+// eslint-disable-next-line no-unused-vars
+const nombresPrincipios = {
+    H01P01: "Principio Heurístico 1",
+    H02P02: "Principio Heurístico 2",
+    H03P03: "Principio Heurístico 3",
+    H04P04: "Principio Heurístico 4",
+    H05P05: "Principio Heurístico 5",
+    H06P06: "Principio Heurístico 6",
+    H07P07: "Principio Heurístico 7",
+    H08P01: "Principio Heurístico 8",
+    H09P01: "Principio Heurístico 9",
+    H10P01: "Principio Heurístico 10",
     
-    const nombres = {
-        H01P01: "Principio 1",
-        H02P02: "Principio 2",
-        H03P02: "Principio 2",
-        H04P02: "Principio 2",
-        H05P02: "Principio 2",
-        H06P02: "Principio 2",
-        H07P02: "Principio 2",
-        H08P02: "Principio 2",
-        H09P02: "Principio 2",
-        H10P02: "Principio 2",
-       
-    };
-    const nombre = nombres[clave];
-    return nombre ? nombre : clave;
 };
 
-const enviarinfo = async () => {
+// Función para obtener el nombre del principio heurístico
+const obtenerNombrePrincipio = (nombresPrincipios) => {
+    return nombresPrincipios[nombresPrincipios] || nombresPrincipios; 
+};
+
+const enviarinfo =  async () => {
     console.log("pruebaenvio", route.params.idowner);
 
     Heuristics.value.owner_id = route.params.idowner;
@@ -1079,6 +1158,48 @@ const getownerInfo = async (id) => {
     }
 }
 
+const enviarDatos = async () => { 
+    const { totalSi, totalNo } = calcularSumaTotal();
+    const { porcentajeSi, porcentajeNo } = calcularPorcentajes();
+    const username = obtenerUsuarioLogueado();
+    const role = obtenerRolUsuarioLogueado();
+
+    // Datos a enviar
+    const data = {
+        suma_si: totalSi,
+        suma_no: totalNo,
+        porcentaje_si: porcentajeSi,
+        porcentaje_no: porcentajeNo,
+        user_username: username,
+        rol: role,
+    };
+
+    // Realizar la solicitud POST al endpoint /porcentajechecklists
+    await axios.post('http://127.0.0.1:5000/porcentajechecklists', data)
+        .then(response => {
+            console.log(response.data.message); // Mensaje de éxito del backend
+        })
+        .catch(error => {
+            console.error('Error al enviar los datos:', error);
+        });
+};
+
+// Función para obtener los datos de porcentaje desde el backend y mostrarlos en el frontend
+const mostrarPorcentajeCheckList = () => {
+    axios.get('http://127.0.0.1:5000/porcentajechecklists')
+        .then(response => {
+            const porcentajes = response.data.porcentajes;
+            console.log(porcentajes);
+            // Por ejemplo, mostrar los datos en una lista en el frontend
+            porcentajes.forEach(porcentaje => {
+    
+                console.log(`Porcentaje ID: ${porcentaje.id}, user_name:${porcentaje.user_name}, rol:${porcentaje.rol}, Suma Si: ${porcentaje.suma_si}, Suma No: ${porcentaje.suma_no}, Porcentaje Si: ${porcentaje.porcentaje_si}, Porcentaje No: ${porcentaje.porcentaje_no}`);
+            });
+        })
+        .catch(error => {
+            console.error('Error al obtener los datos de porcentaje :', error);
+        });
+};
 
 //generar pdf para resultados de la checklist
 const obtenerRolUsuarioLogueado = () => {
@@ -1104,12 +1225,13 @@ const mostrarPDFGenerado = (pdfUrl) => {
 
 window.addEventListener('pdf-generado', (event) => {
     const pdfUrl = event.detail;
-    guardarPDFcache(pdfUrl); // Corregido el nombre de la función
+    guardarPDFcache(pdfUrl); // 
 });
 
-const generarPDF = async ( experienciaUsuario,) => {
- 
+const generarPDF = async ( ) => {
+
     const doc = new jsPDF();
+    //funciones para obtener los datos que se necesecitan
     const role = obtenerRolUsuarioLogueado();
     const username = obtenerUsuarioLogueado();
      const aprobadoNoAprobado = (value) => {
@@ -1117,15 +1239,15 @@ const generarPDF = async ( experienciaUsuario,) => {
     };
 
     
-      // Agregar contenido al PDF
+      // Agregar contenido al PDF los datso obtenidos
     doc.text("Resultado de la Lista de Chequeo", 10, 10);
     doc.text(`Rol : ${role}`, 10, 20); 
     doc.text(`nombre de usuario : ${username}`, 10, 30); 
-    doc.text(`Experiencia: ${experienciaUsuario}`, 10, 40); 
+   
 
     // Configurar posición inicial para las tablas
     let startY = 40;
-
+    const spaceBetweenTables = 10;
 
     
     const data1 = [
@@ -1389,15 +1511,58 @@ doc.autoTable(options1);
     const table = document.querySelector('.table');
 const tableData = doc.autoTableHtmlToJson(table);
 
-    const spaceBetweenTables = 10;
-    const options = {
+  // Agregar la segunda tabla al documento PDF
+  doc.autoTable(tableData.columns, tableData.data, );
+  const options20= {
     startY: doc.autoTable.previous.finalY + spaceBetweenTables, 
     theme: 'grid', 
 };
 
-  // Agregar la segunda tabla al documento PDF
-   doc.autoTable(tableData.columns, tableData.data, options);
+   
+   // Segunda tabla de ejemplo (sumatoria.value)
+const primeraTabla = [];
+    for (const key in sumatoria.value) {
+        if (sumatoria.value.hasOwnProperty(key)) {
+            const value = sumatoria.value[key];
+            primeraTabla.push([
+                obtenerNombrePrincipio(key),
+                value.trueCount,
+                value.trueCount / 2,
+                value.falseCount,
+                value.falseCount / 2
+            ]);
+        }
+    }
 
+    const options21 = {
+        startY: doc.autoTable.previous.finalY + spaceBetweenTables,
+        head: [['Principio Heuristico', 'Aprobados(Sí)', 'Media(Sí)', 'No Aprobados(No)', 'Media(No)']],
+        body: primeraTabla,
+        theme: 'grid'
+    };
+    doc.autoTable(options21);
+
+    // Tercera tabla de ejemplo (maximoPosible.value)
+    const segundaTabla = [];
+    for (const key in sumatoria.value) {
+        if (sumatoria.value.hasOwnProperty(key)) {
+            const value = sumatoria.value[key];
+            segundaTabla.push([
+                value.trueCount / 2,
+                maximoPosible.value[key],
+                maximoPosible.value[key] - value.trueCount / 2
+            ]);
+        }
+    }
+
+    const options30 = {
+        startY: doc.autoTable.previous.finalY + spaceBetweenTables,
+        head: [['Media(Sí)', 'Máximo posible', 'Diferencia']],
+        body: segundaTabla,
+        theme: 'grid'
+    };
+    doc.autoTable(options30);
+    
    
     // Crear una URL para el Blob
     const pdfBlob = doc.output('blob');
