@@ -158,7 +158,7 @@ const evaluadorFormCompleted = ref(false);
 const handleSaveEvaluadorTest = async () => {
 
   try {
-        const response = await axios.post('http://127.0.0.1:5000/evaluator_info', evaluadorForm.value);
+        const response = await axios.post(' http://127.0.0.1:8000/api/evaluator_info', evaluadorForm.value);
         console.log(response.data.message);
     } catch (error) {
         console.error('Error al enviar datos del evaluador al backend:', error);
@@ -197,7 +197,7 @@ const handleSaveHTest = async () => {
 
   // Si no hay errores, procede con la solicitud HTTP
   try {
-    const response = await axios.post('http://127.0.0.1:5000/owners', {
+    const response = await axios.post(' http://127.0.0.1:8000/api/owners', {
       name: form.value.name,
       url: form.value.url,
       description: form.value.description
@@ -214,7 +214,7 @@ const handleSaveHTest = async () => {
 
 const handleDeleteHTest = async (id) => {
   try {
-    const response = await axios.delete(`http://127.0.0.1:5000/owners/${id}`);
+    const response = await axios.delete(` http://127.0.0.1:8000/api/owners/${id}`);
     console.log(response);
 
     await refreshOwnersList();
@@ -236,7 +236,7 @@ const goToEvaluate = (ownerId) => {
 
 const refreshOwnersList = async () => {
   try {
-    const response = await axios.get('http://127.0.0.1:5000/owners');
+    const response = await axios.get(' http://127.0.0.1:8000/api/owners');
     owners.value = response.data.owners;
     console.log(owners.value);
   } catch (error) {

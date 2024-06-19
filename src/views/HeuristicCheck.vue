@@ -1133,7 +1133,7 @@ const enviarinfo =  async () => {
 
     Heuristics.value.owner_id = route.params.idowner;
     console.log(Heuristics.value);
-    await axios.post("http://127.0.0.1:5000/heuristics", Heuristics.value).then(response => {
+    await axios.post(" http://127.0.0.1:8000/api/heuristics", Heuristics.value).then(response => {
         console.log(response)
         router.push('/encuestaterminada')
     }).catch(err => {
@@ -1149,7 +1149,7 @@ const owner = ref({
 const url = ref('');
 const getownerInfo = async (id) => {
     try {
-        const response = await axios.get(`http://127.0.0.1:5000/owners/${id}`);
+        const response = await axios.get(` http://127.0.0.1:8000/api/owners/${id}`);
         owner.value = response.data;
         url.value = owner.value.url;
         console.log(url.value);
@@ -1175,7 +1175,7 @@ const enviarDatos = async () => {
     };
 
     // Realizar la solicitud POST al endpoint /porcentajechecklists
-    await axios.post('http://127.0.0.1:5000/porcentajechecklists', data)
+    await axios.post(' http://127.0.0.1:8000/api/porcentajechecklists', data)
         .then(response => {
             console.log(response.data.message); // Mensaje de éxito del backend
         })
@@ -1186,7 +1186,7 @@ const enviarDatos = async () => {
 
 // Función para obtener los datos de porcentaje desde el backend y mostrarlos en el frontend
 const mostrarPorcentajeCheckList = () => {
-    axios.get('http://127.0.0.1:5000/porcentajechecklists')
+    axios.get(' http://127.0.0.1:8000/api/porcentajechecklists')
         .then(response => {
             const porcentajes = response.data.porcentajes;
             console.log(porcentajes);

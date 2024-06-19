@@ -26,7 +26,7 @@ const handleRegister = async () => {
 
 
   // Envío de datos al backend
-  const response = await axios.post('http://127.0.0.1:5000/register', {
+  const response = await axios.post(' http://127.0.0.1:8000/api/users', {
     username: form.value.username,
     email: form.value.email,
     password: form.value.password,

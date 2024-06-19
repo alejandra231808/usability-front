@@ -35,12 +35,12 @@ const handleLogin = async () => {
   }
 
   try {
-    const response = await axios.post('http://127.0.0.1:5000/login', {
+    const response = await axios.post(' http://127.0.0.1:8000/api/login', {
       username: form.value.username,
       password: form.value.password
     });
 
-    const { username, rol, experiencia } = response.data.user; // Obtener los datos del usuario desde la respuesta
+    const { username, rol, experiencia } = response.data[0]; // Obtener los datos del usuario desde la respuesta
 
     // Almacenar el nombre de usuario, el rol y la experiencia en el store de autenticación
     useAuth.login(rol, username, experiencia);
