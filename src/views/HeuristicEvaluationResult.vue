@@ -1,40 +1,17 @@
 <script setup>
-
+//import html2pdf from "html2pdf.js"
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import { ref, onMounted, toRaw } from 'vue';
-import { useRoute,  } from 'vue-router'
+import { useRoute, /*useRouter*/ } from 'vue-router'
 import axios from 'axios';
 const route = useRoute();
 //const router = useRouter();
 const evaluationResults = ref([]);
 const ownerId = ref();
 const EvaluationDescprition = ref("A continuación se presentan los resultados de la evaluación de usabilidad, utilizando el método de prueba denominado analisis heuristico. Se muestra la tabla de resultados con sus respectivos niveles de criterios de usabilidad");
-
-const mostrarPDFDesdeCache = () => {
-    const cachedPDF = localStorage.getItem('cachedPDF');
-    if (cachedPDF) {
-        window.open(cachedPDF, '_blank');
-    } else {
-        console.log('No hay PDF en caché');
-    }
-};
-
-// Función abrir el PDF tabla de problemas guardado en caché
-const openCachedPDF = () => {
-  // linea para  el PDF URL guardado en caché
-  const cachedPDFUrl = localStorage.getItem('cachedPDF');
-
-  if (cachedPDFUrl) {
-    // Abre una nueva ventana con la vista previa del PDF guardado en caché
-    window.open(cachedPDFUrl, '_blank');
-  } else {
-   
-    console.error('No hay PDF guardado en caché.');
-  }
-};
-
+//const exportValues = ref();
 onMounted(() => {
     ownerId.value = route.params.ownerId
     getEvaluationResults();
@@ -43,19 +20,28 @@ onMounted(() => {
 
 const getEvaluationResults = async () => {
     try {
-        const response = await axios.get(` http://127.0.0.1:8000/api/evaluations/${ownerId.value}`);
+        const response = await axios.get(`http://127.0.0.1:5000/evaluations/${ownerId.value}`);
         evaluationResults.value = response.data;
         console.log("Informacion del get", evaluationResults.value);
+        
+        // Llama a la función para generar el PDF con los resultados y la gráfica
+        infode();
     } catch (error) {
         console.error("Error al obtener los resultados de la evaluación:", error);
     }
 };
+
 const infode = () => {
+
     const valuesArray = toRaw(evaluationResults.value).map(obj => Object.values(obj));
     let arreglofinal = [['Código', 'Descripción', 'Heuristica Incumplida', 'Criticismo', 'Frecuencia', "Severidad", 'Incidentes']];
     valuesArray.forEach(value => {
+
         arreglofinal.push([value[5], value[1], value[3], value[0], value[2], value[6], value[4]]);
-    });
+    }
+    );
+    
+    console.log(arreglofinal);
     var dd = {
         content: [
             { text: 'Tables', style: 'header' },
@@ -90,40 +76,38 @@ const infode = () => {
             }
         },
         defaultStyle: {
-            
+            // alignment: 'justify'
         }
+
+
     }
+
+    
+
     pdfMake.createPdf(dd).open();
 
 };
+
+
+
 const exportPDF = () => {
     infode();
 }
 
-
-
 </script>
 
 <template>
-
     <div class="container-fluid">
-    <div class="row">
-        <div class="col">
-            <button class="btn btn-success" @click="openCachedPDF()">Descargar PDF Gráfica/cálculos tabla problemas</button>
-            <button class="btn btn-success" @click="exportPDF()">Descargar PDF Tabla Problemas</button>
-            <button class="btn btn-success" @click="mostrarPDFDesdeCache()">Descargar PDF lista de chequeo </button>
-        </div>
-       
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title">Resultados</h5>
-                </div>
-                <div class="card-body">
-                    <p class="card-text">{{ EvaluationDescprition }}</p>
-                </div>
+        <div><button class="btn btn-success" @click="exportPDF()">Descargar PDF</button></div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Resultados</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">{{ EvaluationDescprition }}</p>
+                    </div>
                 </div>
                 <div class="card mt-3">
                     <div class="card-header">
@@ -151,8 +135,6 @@ const exportPDF = () => {
                                     <td>{{ evaluation.frequency }}</td>
                                     <td>{{ evaluation.severity }}</td>
                                     <td>{{ evaluation.incidents }}</td>
-                                    
-                                  
 
                                 </tr>
                             </tbody>
@@ -162,5 +144,4 @@ const exportPDF = () => {
             </div>
         </div>
     </div>
-    
 </template>

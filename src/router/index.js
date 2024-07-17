@@ -5,13 +5,18 @@ import HeuristicCheck from '../views/HeuristicCheck.vue'
 import HeuristicProblems from '../views/heuristicproblems.vue'
 import HeuristicEvaluation from '../views/HeuristicEvaluation.vue'
 import HeuristicEvaluationResult from '../views/HeuristicEvaluationResult.vue'
-import DesingTest from '../views/DesingTests.vue'
-import DesingTestQuestionary from '../views/DesingTestQuestionary.vue'
 import ChecklistDone from '../views/ChecklistDone.vue'
 import Register from '../views/Register_2.vue'
 import Login from '../views/Loguin_2.vue'
+/////////////
+import DesignTest from '../views/DesignTests.vue'
+import DesignTestQuestionnaire from '../views/DesignTestQuestionnaire.vue'
+import EvaluatorAccess from '../views/EvaluatorAccess.vue'
+import EvaluatorResponses from '../views/EvaluatorResponses.vue'
+import ResponsesView from '../views/ResponsesView.vue'
+/////////////
 import { useAuthStore } from '../stores/useAuthStore';
-
+            
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -57,6 +62,7 @@ const router = createRouter({
       ,
       meta: { requiresAuth: true }
     },
+    
     {
       path: '/o/:idowner/checklist',
       component: HeuristicCheck,
@@ -69,23 +75,45 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
-      path: '/o/:ownerId/resultadoevaluacion', component: HeuristicEvaluationResult,
+      path: '/o/:ownerId/resultadoevaluacion', 
+      component: HeuristicEvaluationResult,
       meta: { requiresAuth: true }
     },
-    //rutas desing 
+    ///////////////
     {
-      path: '/pruebadiseno', component: DesingTest,
+      path: '/designtests', 
+      component: DesignTest,
       meta: { requiresAuth: true }
     },
     {
-      path: '/o/:ownerId/cuestionario', component: DesingTestQuestionary,
+      name:'questionnaires',
+      path: '/designtests/:testId/questionnaires', 
+      component: DesignTestQuestionnaire,
       meta: { requiresAuth: true }
     },
+    {
+      path: '/designtests/access/',
+      name:'access_tests',
+      component: EvaluatorAccess,
+      meta: {requiresAuth: true}
+    },
+    
+    {
+      name:'evaluator_responses',
+      path: '/questionnaires/:testId', 
+      component: EvaluatorResponses,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/responses/:testId',
+      name: 'responses',
+      component: ResponsesView
+    },
+    ///////////////////
     //register
     { path: '/register', component: Register },
     //loguin
-    { path: '/login', component: Login }
-
+    { path: '/login', component: Login },
   ]
 
 

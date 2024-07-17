@@ -12,7 +12,8 @@
                         <RouterLink class="nav-link" to="/pruebasheuristicas">Inicie Sesion</RouterLink>
                     </li>
                     <li class="nav-item">
-                        <RouterLink class="nav-link" to="/pruebadiseno">Pruebas Diseño</RouterLink>
+                        <RouterLink v-if="designTestsLink" class="nav-link" :to="designTestsLink">Pruebas Diseño</RouterLink>
+                        <span v-else class="nav-link">Pruebas Diseño</span>
                     </li>
                     <li class="nav-item">
                         <RouterLink class="nav-link" to="/register">Registrarse</RouterLink>
@@ -27,6 +28,7 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import { useAuthStore } from '../stores/useAuthStore';
 import { useRouter } from 'vue-router';
 
@@ -34,15 +36,28 @@ const condition = true;
 const router = useRouter();
 const useAuth = useAuthStore();
 
+// Obtener el rol del usuario desde authStore
+const userRole = computed(() => useAuth.role);
+
 const handleLogout = () => {
-    console.log("cerrando sesion")
+    console.log("cerrando sesion");
     useAuth.logout();
     router.push("/");
 }
+
+// Determinar la ruta basada en el rol del usuario
+const designTestsLink = computed(() => {
+    if (userRole.value === 'evaluator') {
+        return '/designtests/access/';
+    } else if (userRole.value === 'owner') {
+        return '/designtests';
+    } else {
+        return null;
+    }
+});
 </script>
 
 <style scoped>
-
 .navbar {
     background-color: #e0d8e9; /* Color de fondo */
     border-bottom: 1px solid #207260; /* Borde inferior */

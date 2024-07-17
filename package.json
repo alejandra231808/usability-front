@@ -11,7 +11,7 @@
     "serve": "vite"
   },
   "dependencies": {
-    "axios": "^1.5.0",
+    "axios": "^1.6.8",
     "bootstrap": "^5.3.3",
     "chartjs-plugin-datalabels": "^2.2.0",
     "html2canvas": "^1.4.1",
@@ -28,6 +28,7 @@
     "vue-chartjs": "^5.3.0",
     "vue-clipboard2": "^0.3.3",
     "vue-gauge": "^1.0.3",
+    "vue-iframes": "^0.0.20",
     "vue-router": "^4.2.4",
     "vuex": "^4.1.0",
     "xmldom": "^0.6.0"
