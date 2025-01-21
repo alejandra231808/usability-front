@@ -7,7 +7,7 @@ const form = ref({
   username: '',
   email: '',
   password: '',
-  role: '', // Cambiado a "rol" para que coincida con el backend
+  role: '', 
   experience: ''
 });
 
@@ -28,15 +28,15 @@ const handleRegister = async () => {
       username: form.value.username,
       email: form.value.email,
       password: form.value.password,
-      rol: form.value.role, // Asegurarse de usar "rol"
+      rol: form.value.role, 
       experience: form.value.experience
     });
 
     console.log(response);
-    router.push('/login'); // Redirige a la página de inicio de sesión después del registro
+    router.push('/login'); 
   } catch (error) {
     if (error.response?.data) {
-      errors.value = error.response.data; // Maneja los errores del backend
+      errors.value = error.response.data; 
     } else {
       console.error(error.message);
     }

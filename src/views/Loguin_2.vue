@@ -38,13 +38,13 @@ const handleLogin = async () => {
       password: form.value.password
     });
 
-    const { username, rol, experiencia } = response.data; // Datos recibidos
-    useAuth.login(rol, username, experiencia); // Guardar en el store
-    router.push('/pruebasheuristicas'); // Navegar a la ruta deseada
+    const { username, rol, experiencia } = response.data; 
+    useAuth.login(rol, username, experiencia); 
+    router.push('/pruebasheuristicas'); 
   } catch (error) {
     console.error(error);
     if (error.response && error.response.data.error) {
-      alert(error.response.data.error); // Mostrar error claro al usuario
+      alert(error.response.data.error); 
     } else {
       alert('Ocurrió un error inesperado.');
     }
