@@ -70,7 +70,6 @@
 
 </div>
 
-
       <div class="col-sm-6">
         <table class="table table-primary table-striped-columns">
           <thead>
@@ -237,8 +236,8 @@ const goToEvaluate = (ownerId) => {
 const refreshOwnersList = async () => {
   try {
     const response = await axios.get(' http://127.0.0.1:8000/api/owners');
-    owners.value = response.data.owners;
-    console.log(owners.value);
+    owners.value = response.data;
+    console.log(owners);
   } catch (error) {
     console.error('Error al obtener la lista de propietarios:', error);
   }
